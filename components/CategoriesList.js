@@ -60,7 +60,7 @@ const CategoriesList = () => {
 const styles = StyleSheet.create({
     container: {
         height: 50,
-        backgroundColor: 'white',
+        backgroundColor: 'transparent',
         marginBottom: 10,
 
     },

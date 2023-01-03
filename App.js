@@ -8,52 +8,126 @@ import Saved from './screens/Saved';
 import Cart from './screens/Cart';
 import Setting from './screens/Setting';
 import { Ionicons , AntDesign} from '@expo/vector-icons';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './screens/HomeScreen';
+import SavedStore from './stores/SavedStore';
+import Start from './screens/Start';
+import { useState } from 'react';
+import StartStore from './stores/Start';
+const Stack = createNativeStackNavigator();
+
 const Tab = createBottomTabNavigator();
 export default function App() {
+  const start = StartStore(state => state.start)
+  const saved = SavedStore(state => state.saved)
+ 
+  
   return (
     <NavigationContainer>
-      <Tab.Navigator 
-      screenOptions={{
-                    tabBarActiveTintColor: 'black',
-                    tabBarInactiveTintColor: 'gray',
-                    tabBarStyle: {
-                      borderTopLeftRadius: 30,
-                      borderTopRightRadius: 30,
-                      backgroundColor: '#e7e7e7',
-                    },
-      }}>
-        <Tab.Screen name="Home" component={Home} 
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="home" color={color} size={size} />
-            ),
-            headerShown: false,
+      {start ? <Tab.Navigator
+        screenOptions={{
+         //hide the tab bar at the bottom
+          tabBarStyle: {
+            display:"none"
+          }
+          
+        }}
+      >
+        <Tab.Screen name="Start" component={Start} options={{
+          headerShown: false,
+        }}/>
+      </Tab.Navigator> : 
+        <Tab.Navigator 
+        screenOptions={{
+          tabBarActiveTintColor: 'black',
+          tabBarInactiveTintColor: 'gray',
+          tabBarStyle: {
+            // borderTopLeftRadius: 30,
+            // borderTopRightRadius: 30,
+             backgroundColor: '#e7e7e7',
 
-          }}
-        />
-        <Tab.Screen name="Saved" component={Saved} 
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="heart" color={color} size={size} />
-            ),
-          }}
-        />
-        <Tab.Screen name="Cart" component={Cart} 
-          options={{
-            tabBarIcon: ({ color, size }) => (
+          },
+          tabBarShowLabel: false,
+}}
+    >
+      {start ? <Tab.Screen name="Start" component={Start} options={{
+        headerShown: false,
+      }}/> : null}
+
+
+      <Tab.Screen name="Home" component={HomeScreen} 
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" color={color} size={size} />
+          ),
+          headerShown: false,
+
+        }}
+      />
+      <Tab.Screen name="Saved" component={Saved} 
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <View 
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 50,
+              height: 50,
+          
+              
+            }}
+
+            >
+             <AntDesign name="hearto" size={24} color={color} />
+              <Text style={{
+                paddingBottom: 10,
+                fontSize: 10,
+              }}>{saved.length}</Text>
+            </View>
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen name="Cart" component={Cart} 
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <View 
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 50,
+              height: 50,
+          
+              
+            }}
+
+            >
               <Ionicons name="cart" color={color} size={size} />
-            ),
-          }}
-        />
-        <Tab.Screen name="Settings" component={Setting} 
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="settings" color={color} size={size} />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-      <StatusBar style="auto" />
+              <Text style={{
+                paddingBottom: 10,
+                fontSize: 10,
+              }}>0</Text>
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen name="Settings" component={Setting} 
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="settings" color={color} size={size} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+        }
+
+    
+         
+      <StatusBar style="light" 
+      backgroundColor="black"
+      />
     </NavigationContainer>
   );
 }
