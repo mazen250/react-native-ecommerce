@@ -1,4 +1,4 @@
-
+import 'react-native-gesture-handler'
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -14,13 +14,14 @@ import SavedStore from './stores/SavedStore';
 import Start from './screens/Start';
 import { useState } from 'react';
 import StartStore from './stores/Start';
+import useCartStore from './stores/CartStore';
 const Stack = createNativeStackNavigator();
-
 const Tab = createBottomTabNavigator();
 export default function App() {
   const start = StartStore(state => state.start)
   const saved = SavedStore(state => state.saved)
- 
+  const cart = useCartStore(state => state.cart)
+  
   
   return (
     <NavigationContainer>
@@ -108,15 +109,15 @@ export default function App() {
               <Text style={{
                 paddingBottom: 10,
                 fontSize: 10,
-              }}>0</Text>
+              }}>{cart.length}</Text>
             </View>
           ),
         }}
       />
-      <Tab.Screen name="Settings" component={Setting} 
+      <Tab.Screen name="Location" component={Setting} 
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" color={color} size={size} />
+            <Ionicons name="location" color={color} size={size} />
           ),
         }}
       />

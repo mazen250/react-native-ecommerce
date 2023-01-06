@@ -5,12 +5,16 @@ import { FlashList } from "@shopify/flash-list";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import SavedStore from '../stores/SavedStore';
+import useCartStore from '../stores/CartStore';
+import Toaster from '../components/Toaster';
 const ProductsSection = () => {
+    const addToCart = useCartStore(state => state.addToCart)
     const navigation = useNavigation(); 
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    const [isToasterDisplayed, setIsToasterDisplayed] = useState(false);
     useEffect(() => {
         axios.get('https://dummyjson.com/products?limit=30')
         .then(res => {
@@ -29,6 +33,7 @@ const ProductsSection = () => {
        
          const saved = SavedStore(state => state.saved)
          const renderItem = ({item}) => {
+
         return (
             <Pressable key={item.id} style={{
                 height: 300,
@@ -46,9 +51,11 @@ const ProductsSection = () => {
                 shadowRadius: 2.22,
                 elevation: 3,
                 alignItems: 'center',
+                zIndex: 0,
             }}
             onPress={() => navigation.navigate('Details', {item})}
             > 
+            {/* {isToasterDisplayed && <Toaster />} */}
                 {/** add a buttom at the top left with a heart icon */}
                     <Pressable style={{position: 'absolute',
                             top: 10,
@@ -71,6 +78,7 @@ const ProductsSection = () => {
                         >
                     <Ionicons name="heart" size={30} color="white" />
                     </Pressable>
+                   
                 <Image source={{uri: item.thumbnail}} style={{height:"70%", width: "100%",borderRadius:10}}/>
                 <View style={{
                     padding: 10,
@@ -114,12 +122,23 @@ const ProductsSection = () => {
                     alignItems: 'center',
                     borderRadius: 10,
 
-                }}>
+                }}  
+                onPress={() => {
+                    addToCart(item)
+                     setIsToasterDisplayed(true)
+                    setTimeout(() => {
+                        setIsToasterDisplayed(false)
+                    }, 1300);
+
+                    //alert('Added to cart')
+                }}
+                >
                     <Text style={{
                         color: 'white',
                         fontSize: 12,
                     }}>Add to Cart</Text>
                 </Pressable>
+
             </Pressable>
         )
     }
@@ -132,6 +151,7 @@ const ProductsSection = () => {
         
         flexDirection: 'column',
     }}>
+         {isToasterDisplayed && <Toaster text={"Added to cart"} />}
        {error && <Text>{errorMessage}</Text>}
          {loading && <Text>Loading...</Text>}
    
